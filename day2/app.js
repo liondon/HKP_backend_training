@@ -3,6 +3,7 @@
 // include the modules
 const http = require('http');
 const url = require('url');
+const fs = require('fs');
 const dt = require('./module');
 
 const hostname = '127.0.0.1';
@@ -25,8 +26,18 @@ const server = http.createServer((req, res) => {
   const text = `year: ${query.year}, month: ${query.month}`;
   res.write(`<h2>2. The query string is: ${text}</h2>`)
 
-  // end the response
-  res.end();
+  // read file and write to response
+  fs.readFile('helloWorld.html', (err, data) => {
+    if (err) {
+      console.log('Error: cannot read the file');
+    } else {
+      res.write(data);
+    }
+
+    // NOTE: Due to Asynchronous, this has to be put inside the function
+    // to make sure res only ends after the above lines are executed. 
+    return res.end();
+  });
 });
 
 // the server object listens on `hostname:port`
