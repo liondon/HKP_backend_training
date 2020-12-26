@@ -4,6 +4,7 @@
 const http = require('http');
 const url = require('url');
 const fs = require('fs');
+const uc = require('upper-case')
 const dt = require('./module');
 
 const hostname = '127.0.0.1';
@@ -18,7 +19,7 @@ const server = http.createServer((req, res) => {
   // res.writeHead(200, {'Content-Type': 'text/html'});
 
   // write a response to the client
-  res.write(`<h1>Hello World!</h1>`)
+  res.write(uc.upperCase(`<h1>Hello World!</h1>`));
   res.write(`<h2>1. The date and time are currently: ${dt.myDateTime()}</h2>`);
 
   // using the url module
