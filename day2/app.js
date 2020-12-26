@@ -2,7 +2,8 @@
 
 // include the modules
 const http = require('http');
-const dt = require('./module')
+const url = require('url');
+const dt = require('./module');
 
 const hostname = '127.0.0.1';
 const port = 3000;
@@ -19,8 +20,10 @@ const server = http.createServer((req, res) => {
   res.write(`<h1>Hello World!</h1>`)
   res.write(`<h2>1. The date and time are currently: ${dt.myDateTime()}</h2>`);
 
-  // read the query string
-  res.write(`<h2>2. The query string is: ${req.url}</h2>`)
+  // read and parse the query string
+  const query = url.parse(req.url, true).query;
+  const text = `year: ${query.year}, month: ${query.month}`;
+  res.write(`<h2>2. The query string is: ${text}</h2>`)
 
   // end the response
   res.end();
