@@ -14,7 +14,7 @@ const server = http.createServer((req, res) => {
   // add HTTP Header
   res.statusCode = 200
   res.setHeader('Content-type', 'text/html');
-  // can also do this in one line:
+  // NOTE:can also do this in one line:
   // res.writeHead(200, {'Content-Type': 'text/html'});
 
   // write a response to the client
@@ -26,28 +26,34 @@ const server = http.createServer((req, res) => {
   const text = `year: ${query.year}, month: ${query.month}`;
   res.write(`<h2>2. The query string is: ${text}</h2>`);
 
-  // create/append file
+  // using the fs module
+  // NOTE: there's also fs.open(), fs.rename(), etc.
+  // NOTE: use sync func here to assure execution order  
   try {
+    // create/append file
     fs.appendFileSync('new.html', '<h1>this is from newly created file</h1>');
     console.log('File created!')
+
+    // read file and write to response
     res.write(fs.readFileSync('new.html'));
+
+    // over-write the existing file (or create new file) 
+    fs.writeFileSync('new.html', '<h1>this is the over-written file</h1>');
+    console.log('File over-written!')
+    res.write(fs.readFileSync('new.html'));
+
+    // delete file
+    fs.unlinkSync('new.html');
+    console.log('File deleted!');
+
   } catch (err) {
     throw err;
   }
 
-  // read file and write to response
-  fs.readFile('helloWorld.html', (err, data) => {
-    if (err) {
-      console.log('Error: cannot read the file');
-    } else {
-      res.write(data);
-    }
-    // NOTE: Due to asynchronous, 
-    // this has to be put inside the last executed function
-    // to make sure res only ends after all functions are executed. 
-    return res.end();
-  });
-
+  // NOTE: if there's asynchronous functions, 
+  // this has to be put inside the last executed function
+  // to make sure res only ends after all functions are executed. 
+  return res.end();
 });
 
 // the server object listens on `hostname:port`
