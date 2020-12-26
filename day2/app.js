@@ -24,7 +24,7 @@ const server = http.createServer((req, res) => {
 
   // using the url module
   const q = url.parse(req.url, true);
-  console.log(JSON.stringify(q));
+  console.log(`q = ${JSON.stringify(q)}`);
   //TODO: q.host didn't get `${hostname}:${port}` as expected, why?
   console.log(`q.host = ${q.host}`);
   console.log(`q.pathname = ${q.pathname}`);
@@ -50,7 +50,7 @@ const server = http.createServer((req, res) => {
       res.write(fs.readFileSync('new.html'));
 
       // over-write the existing file (or create new file) 
-      fs.writeFileSync('new.html', query.text);
+      fs.writeFileSync('new.html', `<h1>this is from user-defined content: ${query.text}</h1>`);
       console.log('File over-written!')
       res.write(fs.readFileSync('new.html'));
 
