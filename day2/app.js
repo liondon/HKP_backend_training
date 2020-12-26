@@ -1,5 +1,6 @@
 // include the `http` module
 const http = require('http');
+const dt = require('./module')
 
 const hostname = '127.0.0.1';
 const port = 3000;
@@ -9,7 +10,8 @@ const server = http.createServer((req, res) => {
   res.setHeader('Content-type', 'text/html');
   // can also write these in one line:
   // res.writeHead(200, {'Content-Type': 'text/html'});
-  res.end('<h1>Hello World!</h1>');
+  res.write('<h1>Hello World! The date and time are currently: </h1>' + dt.myDateTime());
+  res.end();
 });
 
 server.listen(port, hostname, () => {
