@@ -34,28 +34,38 @@ const server = http.createServer((req, res) => {
   const text = `year: ${query.year}, month: ${query.month}`;
   res.write(`<h2>2. The query string is: ${text}</h2>`);
 
-  // using the fs module
-  // NOTE: there's also fs.open(), fs.rename(), etc.
-  // NOTE: use sync func here to assure execution order  
-  try {
-    // create/append file
-    fs.appendFileSync('new.html', '<h1>this is from newly created file</h1>');
-    console.log('File created!')
+  // Node.js File Server
+  // if query.text is not empty, write it to file and shows it
+  if (query.text) {
+    // using the fs module
+    // NOTE: there's also fs.open(), fs.rename(), etc.
+    // NOTE: use sync func here to assure execution order  
+    try {
+      // create/append file
+      fs.appendFileSync('new.html', '<h1>this is from newly created file</h1>');
+      console.log('File created!')
 
-    // read file and write to response
-    res.write(fs.readFileSync('new.html'));
+      // read file and write to response
+      res.write(fs.readFileSync('new.html'));
 
-    // over-write the existing file (or create new file) 
-    fs.writeFileSync('new.html', '<h1>this is the over-written file</h1>');
-    console.log('File over-written!')
-    res.write(fs.readFileSync('new.html'));
+      // over-write the existing file (or create new file) 
+      fs.writeFileSync('new.html', query.text);
+      console.log('File over-written!')
+      res.write(fs.readFileSync('new.html'));
 
-    // delete file
-    fs.unlinkSync('new.html');
-    console.log('File deleted!');
+      // delete file
+      fs.unlinkSync('new.html');
+      console.log('File deleted!');
 
-  } catch (err) {
-    throw err;
+    } catch (err) {
+      throw err;
+    }
+  } else { // use the helloWorld.html
+    try {
+      res.write(fs.readFileSync('helloWorld.html'));
+    } catch (err) {
+      throw err;
+    }
   }
 
   // NOTE: if there's asynchronous functions, 
