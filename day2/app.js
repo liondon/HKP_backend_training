@@ -21,8 +21,16 @@ const server = http.createServer((req, res) => {
   res.write(`<h1>Hello World!</h1>`)
   res.write(`<h2>1. The date and time are currently: ${dt.myDateTime()}</h2>`);
 
+  // using the url module
+  const q = url.parse(req.url, true);
+  console.log(JSON.stringify(q));
+  //TODO: q.host didn't get `${hostname}:${port}` as expected, why?
+  console.log(`q.host = ${q.host}`);
+  console.log(`q.pathname = ${q.pathname}`);
+  console.log(`q.search = ${q.search}`);
   // read and parse the query string
-  const query = url.parse(req.url, true).query;
+  const query = q.query;
+  console.log(`query = ${JSON.stringify(query)}`); // need to parse the JSON obj
   const text = `year: ${query.year}, month: ${query.month}`;
   res.write(`<h2>2. The query string is: ${text}</h2>`);
 
