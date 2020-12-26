@@ -64,7 +64,8 @@ const server = http.createServer((req, res) => {
     try {
       res.write(fs.readFileSync('helloWorld.html'));
     } catch (err) {
-      throw err;
+      res.writeHead(404, { 'Content-Type': 'text/html' });
+      return res.end("404 Not Found");
     }
   }
 
