@@ -24,7 +24,16 @@ const server = http.createServer((req, res) => {
   // read and parse the query string
   const query = url.parse(req.url, true).query;
   const text = `year: ${query.year}, month: ${query.month}`;
-  res.write(`<h2>2. The query string is: ${text}</h2>`)
+  res.write(`<h2>2. The query string is: ${text}</h2>`);
+
+  // create/append file
+  try {
+    fs.appendFileSync('new.html', '<h1>this is from newly created file</h1>');
+    console.log('File created!')
+    res.write(fs.readFileSync('new.html'));
+  } catch (err) {
+    throw err;
+  }
 
   // read file and write to response
   fs.readFile('helloWorld.html', (err, data) => {
@@ -33,11 +42,12 @@ const server = http.createServer((req, res) => {
     } else {
       res.write(data);
     }
-
-    // NOTE: Due to Asynchronous, this has to be put inside the function
-    // to make sure res only ends after the above lines are executed. 
+    // NOTE: Due to asynchronous, 
+    // this has to be put inside the last executed function
+    // to make sure res only ends after all functions are executed. 
     return res.end();
   });
+
 });
 
 // the server object listens on `hostname:port`
