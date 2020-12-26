@@ -1,3 +1,5 @@
+/* This is adopted from w3schools.com - Node.js Tutorial: https://www.w3schools.com/nodejs/default.asp */
+
 // include the `http` module
 const http = require('http');
 const dt = require('./module')
