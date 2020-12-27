@@ -5,3 +5,4 @@
 4. go to `/${whateverpath}` and check the path and other details (query string, host, etc.) of the `request` showed in console
 5. go to `/?year=${2020}&month=${May}` and check the year/month showed in browser and console
 6. go to `/?text=${UserDefinedContent}` and check the content showed in browser
+7. run `node event.js` and check the result logged in the console
