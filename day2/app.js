@@ -10,51 +10,53 @@ const dt = require('./module')
 const hostname = '127.0.0.1'
 const port = 3000
 
-// create Node.js server
+// **** 1. the http module ****//
+// 1.1 create Node.js server
 const server = http.createServer((req, res) => {
-  // add HTTP Header
+  // 1.2 add HTTP Header
   res.statusCode = 200
   res.setHeader('Content-type', 'text/html')
   // NOTE:can also do this in one line:
   // res.writeHead(200, {'Content-Type': 'text/html'});
 
-  // write a response to the client
+  // 1.3 write a response to the client
   res.write(uc.upperCase('<h1>Hello World!</h1>'))
   res.write(`<h2>1. The date and time are currently: ${dt.myDateTime()}</h2>`)
 
-  // using the url module
+  // **** 2. the url module **** //
   const q = url.parse(req.url, true)
+  // 2.1 read and parse the entire request
   console.log(`q = ${JSON.stringify(q)}`)
   // TODO: q.host didn't get `${hostname}:${port}` as expected, why?
   console.log(`q.host = ${q.host}`)
   console.log(`q.pathname = ${q.pathname}`)
   console.log(`q.search = ${q.search}`)
-  // read and parse the query string
+  // 2.2 read and parse the query string
   const query = q.query
   console.log(`query = ${JSON.stringify(query)}`) // need to transfer the JSON obj
   const text = `year: ${query.year}, month: ${query.month}`
   res.write(`<h2>2. The query string is: ${text}</h2>`)
 
-  // Node.js File Server
+  // 3.0 Node.js File Server
   // if query.text is not empty, write it to file and shows it
   if (query.text) {
-    // using the fs module
+    // **** 3. the fs module **** //
     // NOTE: there's also fs.open(), fs.rename(), etc.
     // NOTE: use sync func here to assure execution order
     try {
-      // create/append file
+      // 3.1 create/append file
       fs.appendFileSync('new.html', '<h1>this is from newly created file</h1>')
       console.log('File created!')
 
-      // read file and write to response
+      // 3.2 read file and write to response
       res.write(fs.readFileSync('new.html'))
 
-      // over-write the existing file (or create new file)
+      // 3.3 over-write the existing file (or create new file)
       fs.writeFileSync('new.html', `<h1>this is from user-defined content: ${query.text}</h1>`)
       console.log('File over-written!')
       res.write(fs.readFileSync('new.html'))
 
-      // delete file
+      // 3.4 delete file
       fs.unlinkSync('new.html')
       console.log('File deleted!')
     } catch (err) {
@@ -77,7 +79,7 @@ const server = http.createServer((req, res) => {
   return res.end()
 })
 
-// the server object listens on `hostname:port`
+// 1.4 the server object listens on `hostname:port`
 server.listen(port, hostname, () => {
   console.log(`Server running at http://${hostname}:${port}`)
 })
