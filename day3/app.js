@@ -33,7 +33,7 @@ MongoClient.connect(url, {
         { name: 'name_2', address: 'addr_2' },
         { name: 'name_3', address: 'addr_3' }
       ]
-      const res = await dbo.collection('customers').insertMany(records)
+      let res = await dbo.collection('customers').insertMany(records)
       console.log('many documents inserted! #Documents inserted = ' + res.insertedCount)
       // 3.3 take a look at the result obj
       console.log(JSON.stringify(res))
@@ -66,6 +66,27 @@ MongoClient.connect(url, {
         .toArray()
       console.log(result)
 
+      // 6.1 update a document
+      await dbo.collection('customers')
+        .updateOne({ name: 'Co Inc' }, {
+          $set: { address: 'addr_new' }
+        })
+      console.log('one document updated')
+      console.log(await dbo.collection('customers').find().toArray())
+
+      // 6.2 update many documents
+      res = await dbo.collection('customers')
+        .updateMany({
+          name: /^name_/
+        }, {
+          $set: { address: 'New York City' }
+        })
+      console.log(res.result.nModified + 'document(s) updated!')
+      console.log(await dbo.collection('customers').find().toArray())
+      // 6.3 take a look at the result obj
+      console.log(res.result)
+
+
       // 5.1 delete one document: the first occurrence that matches the query condition
       await dbo.collection('customers')
         .deleteOne({ address: 'addr_1' })
@@ -73,11 +94,11 @@ MongoClient.connect(url, {
       console.log(await dbo.collection('customers').find().toArray())
 
       // 5.2 delete many
-      const response = await dbo.collection('customers')
+      res = await dbo.collection('customers')
         .deleteMany({ address: /^addr_/ })
-      console.log(response.result.n + 'documents deleted!')
+      console.log(res.result.n + 'documents deleted!')
       // 5.3 take a look at the result obj
-      console.log(response.result)
+      console.log(res.result)
 
       // 6.1 drop a collection
       result = await dbo.collection('customers').drop()
