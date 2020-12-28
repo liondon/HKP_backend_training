@@ -147,7 +147,6 @@ MongoClient.connect(url, {
       console.log('**** left-join two collections ****')
       console.log(JSON.stringify(res))
 
-
       // finally, close the connection
       console.log('**** Closing the connection! ****')
       db.close()
