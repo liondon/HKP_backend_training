@@ -13,7 +13,7 @@ MongoClient.connect(url, {
   .then(async db => {
     try {
       const dbo = db.db('mydb')
-      console.log('Database created!')
+      console.log('**** Database created! ****')
 
       // // 2. create a collection
       // // NOTE: throw error when the collection already exist!
@@ -25,7 +25,7 @@ MongoClient.connect(url, {
       // NOTE: If you try to insert documents in a collection that do not exist, MongoDB will create the collection automatically.
       const record = { name: 'Co Inc', address: 'Highway 37' }
       await dbo.collection('customers').insertOne(record)
-      console.log('a single document inserted!')
+      console.log('**** a single document inserted! ****')
 
       // 3.2 insert many records
       const records = [
@@ -34,16 +34,17 @@ MongoClient.connect(url, {
         { name: 'name_3', address: 'addr_3' }
       ]
       let res = await dbo.collection('customers').insertMany(records)
-      console.log('many documents inserted! #Documents inserted = ' + res.insertedCount)
+      console.log('**** many documents inserted! #Documents inserted = ' + res.insertedCount + ' ****')
       // 3.3 take a look at the result obj
       console.log(JSON.stringify(res))
 
       // 4.1 find one record that matches query cond
       let result = await dbo.collection('customers').findOne({})
-      console.log(result.name)
+      console.log('**** find one record: ' + result.name + ' ****')
 
       // 4.2 find all records that matches query cond
       result = await dbo.collection('customers').find({}).toArray()
+      console.log('**** find many records ****')
       console.log(result)
 
       // 4.3 use projection parameter to specify the fields to return
@@ -51,12 +52,14 @@ MongoClient.connect(url, {
       result = await dbo.collection('customers')
         .find({}, { projection: { _id: 0, address: 1 } })
         .toArray()
+      console.log('**** use projection to only shows addresses ****')
       console.log(result)
 
       // 4.4 use the query parameter to filter the result
       result = await dbo.collection('customers')
         .find({ address: /^addr_/ }) // use regular expression
         .toArray()
+      console.log('**** find many records with query condition ****')
       console.log(result)
 
       // 4.5 use sort
@@ -64,6 +67,15 @@ MongoClient.connect(url, {
         .find()
         .sort({ name: -1 }) // '1'=ascending, '-1'=descending
         .toArray()
+      console.log('**** sort the result ****')
+      console.log(result)
+
+      // 4.6 use limit
+      result = await dbo.collection('customers')
+        .find()
+        .limit(2)
+        .toArray()
+      console.log('**** use limit to only return certain amount of results ****')
       console.log(result)
 
       // 6.1 update a document
@@ -71,7 +83,7 @@ MongoClient.connect(url, {
         .updateOne({ name: 'Co Inc' }, {
           $set: { address: 'addr_new' }
         })
-      console.log('one document updated')
+      console.log('**** one document updated ****')
       console.log(await dbo.collection('customers').find().toArray())
 
       // 6.2 update many documents
@@ -81,35 +93,34 @@ MongoClient.connect(url, {
         }, {
           $set: { address: 'New York City' }
         })
-      console.log(res.result.nModified + 'document(s) updated!')
+      console.log('**** ' + res.result.nModified + ' document(s) updated! ****')
       console.log(await dbo.collection('customers').find().toArray())
       // 6.3 take a look at the result obj
       console.log(res.result)
 
-
       // 5.1 delete one document: the first occurrence that matches the query condition
       await dbo.collection('customers')
         .deleteOne({ address: 'addr_1' })
-      console.log('one document deleted!')
+      console.log('**** one document deleted! ****')
       console.log(await dbo.collection('customers').find().toArray())
 
       // 5.2 delete many
       res = await dbo.collection('customers')
         .deleteMany({ address: /^addr_/ })
-      console.log(res.result.n + 'documents deleted!')
+      console.log('**** ' + res.result.n + ' documents deleted! ****')
       // 5.3 take a look at the result obj
       console.log(res.result)
 
       // 6.1 drop a collection
       result = await dbo.collection('customers').drop()
       if (result) {
-        console.log('Collection deleted!')
+        console.log('**** Collection deleted! ****')
       }
       // equals to:
       // dbo.dropCollection('customers')
 
       // finally, close the connection
-      console.log('Closing the connection!')
+      console.log('**** Closing the connection! ****')
       db.close()
     } catch (err) {
       console.log(err)
