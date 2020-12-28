@@ -58,6 +58,13 @@ MongoClient.connect(url, {
         .toArray()
       console.log(result)
 
+      // 4.5 use sort
+      result = await dbo.collection('customers')
+        .find()
+        .sort({ name: -1 }) // '1'=ascending, '-1'=descending
+        .toArray()
+      console.log(result)
+
       // finally, close the connection
       console.log('Closing the connection!')
       db.close()
