@@ -30,7 +30,8 @@ MongoClient.connect(url, {
       // 3.2 insert many records
       const records = [
         { name: 'name_1', address: 'addr_1' },
-        { name: 'name_2', address: 'addr_2' }
+        { name: 'name_2', address: 'addr_2' },
+        { name: 'name_3', address: 'addr_3' }
       ]
       const res = await dbo.collection('customers').insertMany(records)
       console.log('many documents inserted! #Documents inserted = ' + res.insertedCount)
@@ -64,6 +65,19 @@ MongoClient.connect(url, {
         .sort({ name: -1 }) // '1'=ascending, '-1'=descending
         .toArray()
       console.log(result)
+
+      // 5.1 delete one document: the first occurrence that matches the query condition
+      await dbo.collection('customers')
+        .deleteOne({ address: 'addr_1' })
+      console.log('one document deleted!')
+      console.log(await dbo.collection('customers').find().toArray())
+
+      // 5.2 delete many
+      const response = await dbo.collection('customers')
+        .deleteMany({ address: /^addr_/ })
+      console.log(response.result.n + 'documents deleted!')
+      // 5.3 take a look at the result obj
+      console.log(response.result)
 
       // finally, close the connection
       console.log('Closing the connection!')
