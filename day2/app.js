@@ -4,6 +4,7 @@
 const http = require('http')
 const url = require('url')
 const fs = require('fs')
+const formidable = require('formidable')
 const uc = require('upper-case')
 const dt = require('./module')
 
@@ -73,10 +74,32 @@ const server = http.createServer((req, res) => {
     }
   }
 
-  // NOTE: if there's asynchronous functions,
-  // this has to be put inside the last executed function
-  // to make sure res only ends after all functions are executed.
-  return res.end()
+  // **** 4. the formidable module **** //
+  if (req.url === '/fileupload') {
+    // 4.2 parse the uploaded file
+    const form = new formidable.IncomingForm()
+    form.parse(req, (err, fields, files) => {
+      if (err) throw err
+      const oldpath = files.filetoupload.path
+      const newpath = './temp/' + files.filetoupload.name
+      fs.rename(oldpath, newpath, (e) => {
+        if (e) throw e
+        res.write('File uploaded')
+        res.end()
+      })
+    })
+  } else {
+    // 4.1 create an upload form
+    res.write('<form action="fileupload" method="post" enctype="multipart/form-data">')
+    res.write('<input type="file" name="filetoupload"><br>')
+    res.write('<input type="submit">')
+    res.write('</form>')
+
+    // NOTE: if there's asynchronous functions,
+    // this has to be put inside the last executed function
+    // to make sure res only ends after all functions are executed.
+    return res.end()
+  }
 })
 
 // 1.4 the server object listens on `hostname:port`
