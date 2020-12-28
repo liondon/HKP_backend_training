@@ -9,36 +9,44 @@ const url = 'mongodb://localhost:27017/'
 MongoClient.connect(url, {
   useNewUrlParser: true,
   useUnifiedTopology: true
-}, (err, db) => {
-  if (err) throw err
-  const dbo = db.db('mydb')
-  console.log('Database created!')
-
-  // // 2. create a collection
-  // // NOTE: throw error when the collection already exist!
-  // // NOTE: In MongoDB, a collection is not created until it gets content! MongoDB waits until you have inserted a document before it actually creates the collection.
-  // dbo.createCollection('customers', (err, res) => {
-  //   if (err) throw err
-  //   console.log('Collection created!')
-  // })
-
-  // 3.1 insert a record
-  // NOTE: If you try to insert documents in a collection that do not exist, MongoDB will create the collection automatically.
-  const record = { name: 'Co Inc', address: 'Highway 37' }
-  dbo.collection('customers').insertOne(record, (err, res) => {
-    if (err) throw err
-    console.log('a single document inserted!')
-    // 3.2 insert many records
-    const records = [
-      { name: 'name_1', address: 'addr_1' },
-      { name: 'name_2', address: 'addr_2' }
-    ]
-    dbo.collection('customers').insertMany(records, (err, res) => {
-      if (err) throw err
-      console.log('many documents inserted! #Documents inserted = ' + res.insertedCount)
-      // 3.3 take a look at the result obj
-      console.log(JSON.stringify(res))
-      db.close()
-    })
-  })
 })
+  .then(db => {
+    const dbo = db.db('mydb')
+    console.log('Database created!')
+
+    // // 2. create a collection
+    // // NOTE: throw error when the collection already exist!
+    // // NOTE: In MongoDB, a collection is not created until it gets content! MongoDB waits until you have inserted a document before it actually creates the collection.
+    // dbo.createCollection('customers')
+    //   .then(res => {
+    //     console.log('Collection created!')
+    //   })
+
+    // 3.1 insert a record
+    // NOTE: If you try to insert documents in a collection that do not exist, MongoDB will create the collection automatically.
+    const record = { name: 'Co Inc', address: 'Highway 37' }
+    dbo.collection('customers')
+      .insertOne(record)
+      .then(res => {
+        console.log('a single document inserted!')
+
+        // 3.2 insert many records
+        const records = [
+          { name: 'name_1', address: 'addr_1' },
+          { name: 'name_2', address: 'addr_2' }
+        ]
+        dbo.collection('customers')
+          .insertMany(records)
+          .then(res => {
+            console.log('many documents inserted! #Documents inserted = ' + res.insertedCount)
+
+            // 3.3 take a look at the result obj
+            console.log(JSON.stringify(res))
+
+            // finally, close the connection
+            console.log('Closing the connection!')
+            db.close()
+          })
+      })
+  })
+  .catch(err => { throw err })
