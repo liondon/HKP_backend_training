@@ -43,9 +43,24 @@ MongoClient.connect(url, {
             // 3.3 take a look at the result obj
             console.log(JSON.stringify(res))
 
-            // finally, close the connection
-            console.log('Closing the connection!')
-            db.close()
+            // 4.1 find one record that matches query cond
+            dbo.collection('customers')
+              .findOne({})
+              .then(result => {
+                console.log(result.name)
+
+                // 4.2 find all records that matches query cond
+                dbo.collection('customers')
+                  .find({})
+                  .toArray()
+                  .then(result => {
+                    console.log(result)
+
+                    // finally, close the connection
+                    console.log('Closing the connection!')
+                    db.close()
+                  })
+              })
           })
       })
   })
