@@ -1,3 +1,4 @@
+# Day 2
 ## Getting Started
 1. `git clone` this repo
 2. `cd HKP_backend_training/day2`
