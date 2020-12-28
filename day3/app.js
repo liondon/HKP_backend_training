@@ -45,6 +45,13 @@ MongoClient.connect(url, {
       result = await dbo.collection('customers').find({}).toArray()
       console.log(result)
 
+      // 4.3 use projection parameter to specify the fields to return
+      // NOTE: You will get an error if you specify both 0 and 1 values in the same object. If you specify a field with the value 0, all other fields get the value 1, and vice versa. But _id is an exception; to exclude the _id field, you must set its value to 0 explicitly
+      result = await dbo.collection('customers')
+        .find({}, { projection: { _id: 0, address: 1 } })
+        .toArray()
+      console.log(result)
+
       // finally, close the connection
       console.log('Closing the connection!')
       db.close()
