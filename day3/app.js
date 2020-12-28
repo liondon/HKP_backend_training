@@ -79,6 +79,14 @@ MongoClient.connect(url, {
       // 5.3 take a look at the result obj
       console.log(response.result)
 
+      // 6.1 drop a collection
+      result = await dbo.collection('customers').drop()
+      if (result) {
+        console.log('Collection deleted!')
+      }
+      // equals to:
+      // dbo.dropCollection('customers')
+
       // finally, close the connection
       console.log('Closing the connection!')
       db.close()
