@@ -52,6 +52,12 @@ MongoClient.connect(url, {
         .toArray()
       console.log(result)
 
+      // 4.4 use the query parameter to filter the result
+      result = await dbo.collection('customers')
+        .find({ address: /^addr_/ }) // use regular expression
+        .toArray()
+      console.log(result)
+
       // finally, close the connection
       console.log('Closing the connection!')
       db.close()
