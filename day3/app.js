@@ -119,6 +119,35 @@ MongoClient.connect(url, {
       // equals to:
       // dbo.dropCollection('customers')
 
+      // 7. left-join two collections
+      await dbo.collection('orders').drop()
+      await dbo.collection('orders').insertMany([
+        { _id: 1, product_id: 154, status: 1 }
+      ])
+
+      await dbo.collection('products').drop()
+      await dbo.collection('products').insertMany([
+        { _id: 154, name: 'Chocolate Heaven' },
+        { _id: 155, name: 'Tasty Lemons' },
+        { _id: 156, name: 'Vanilla Dreams' }
+      ])
+
+      res = await dbo.collection('orders')
+        .aggregate([
+          {
+            $lookup: {
+              from: 'products',
+              localField: 'product_id',
+              foreignField: '_id',
+              as: 'orderDetails'
+            }
+          }
+        ])
+        .toArray()
+      console.log('**** left-join two collections ****')
+      console.log(JSON.stringify(res))
+
+
       // finally, close the connection
       console.log('**** Closing the connection! ****')
       db.close()
