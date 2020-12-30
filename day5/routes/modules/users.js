@@ -1,8 +1,10 @@
 const express = require('express')
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 const router = express.Router()
 
 const User = require('../../models/user')
+const secret = 'Put the Secret in .env!!!'
 
 router.post('/create', async (req, res) => {
   /* Creates a User
@@ -20,7 +22,27 @@ router.post('/create', async (req, res) => {
   if (!username || !password) {
     message.Error = 'Some required fileds are missing!'
     return res.status(400).json(message)
+router.post('/login', async (req, res) => {
+  try {
+    const message = {}
+    const { username, password } = req.body
+    const user = await User.findOne({ username })
+    if (!user) {
+      message.message = 'Error: username not found.'
+      return res.status(400).json(message)
+    }
+    const isMatch = await bcrypt.compare(password, user.password)
+    if (!isMatch) {
+      message.message = 'Error: Wrong password.'
+      return res.status(400).json(message)
+    }
+    message.token = jwt.sign({ username }, secret, { expiresIn: '1d' })
+    res.status(200).json(message)
+  } catch (err) {
+    console.log(err)
+    // TODO: what should be returned? 500?
   }
+})
 
   // check if the username has been used
   const existingUser = await User.findOne({ username })
