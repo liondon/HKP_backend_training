@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
+// TODO: use `username` for simplicity, but `ref` should better be used with `_id`
 const itemSchema = new Schema({
   name: {
     type: String,
@@ -10,8 +11,8 @@ const itemSchema = new Schema({
     type: Number,
     required: true
   },
-  userId: {
-    type: Schema.Types.ObjectId,
+  username: {
+    type: String,
     ref: 'User',
     index: true,
     required: true

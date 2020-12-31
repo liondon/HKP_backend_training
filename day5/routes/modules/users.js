@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken')
 const router = express.Router()
 
 const User = require('../../models/user')
-const secret = 'Put the Secret in .env!!!' // TODO: incloud dotenv
+const secret = 'Put the Secret in .env!!!' // TODO: include dotenv
 
 // TODO: confirm the convention of docstring
 /* Login a User
