@@ -5,6 +5,34 @@ const router = express.Router()
 const Item = require('../../models/item')
 const secret = 'Put the Secret in .env!!!' // TODO: include dotenv
 
+router.get('/', async (req, res) => {
+  const message = {}
+  try {
+    const token = req.headers.authorization.split(' ')[1] // 'Bearer $TOKEN'
+
+    // verify and decode the token
+    // TODO: do the verification as middleware, so that protected routes is clear
+    req.decoded = jwt.verify(token, secret)
+
+    // query the items
+    const items = await Item.find({
+      username: req.decoded.username
+    }) // TODO: need lean() and/or sort() after find()?
+
+    return res.status(200).json({ items: items })
+  } catch (err) {
+    console.log(err)
+    // [Error handling] JWT varification failed
+    if (err.name === 'JsonWebTokenError') {
+      message.message = 'Error: JWT verification failed.'
+      return res.status(401).json(message)
+    } else {
+      // TODO: what should be returned? 500?
+      res.end()
+    }
+  }
+})
+
 router.post('/', async (req, res) => {
   const message = {}
   try {
