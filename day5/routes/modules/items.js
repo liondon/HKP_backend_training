@@ -6,28 +6,46 @@ const Item = require('../../models/item')
 const secret = 'Put the Secret in .env!!!' // TODO: include dotenv
 
 router.post('/', async (req, res) => {
-  // get the parsed requirement body
-  const { token, name, quantity } = req.body
+  const message = {}
+  try {
+    // get the parsed requirement body
+    const { token, name, quantity } = req.body
 
-  // verify and decode the token
-  req.decoded = jwt.verify(token, secret)
+    // [Error handling] check empty fields
+    if (!token || !name || !quantity) {
+      message.message = 'Error: Some required fields are missing!'
+      return res.status(400).json(message)
+    }
 
-  // create a new item
-  const item = await Item.create({
-    name,
-    quantity,
-    username: req.decoded.username
-  })
+    // verify and decode the token
+    req.decoded = jwt.verify(token, secret)
 
-  // construct the response
-  const result = {
-    _id: item._id,
-    name: item.name,
-    quantity: item.quantity,
-    username: item.username
+    // create a new item
+    // TODO: how to handle duplicates?
+    const item = await Item.create({
+      name,
+      quantity,
+      username: req.decoded.username
+    })
+
+    // construct the response
+    const result = {
+      _id: item._id,
+      name: item.name,
+      quantity: item.quantity,
+      username: item.username
+    }
+    return res.status(201).json({ item: result })
+  } catch (err) {
+    console.log(err)
+    // [Error handling] JWT varification failed
+    if (err.name === 'JsonWebTokenError') {
+      message.message = 'Error: JWT verification failed.'
+      return res.status(401).json(message)
+    } else {
+      // TODO: what should be returned? 500?
+    }
   }
-
-  return res.status(201).json({ item: result })
 })
 
 module.exports = router

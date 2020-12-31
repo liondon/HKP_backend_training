@@ -14,7 +14,7 @@ router.post('/login', async (req, res) => {
     const message = {}
     const { username, password } = req.body
 
-    // [Error handling] check empty fields (should/could be done at frontend)
+    // [Error handling] check empty fields
     if (!username || !password) {
       message.message = 'Error: Some required fields are missing!'
       return res.status(400).json(message)
@@ -56,7 +56,7 @@ router.post('/create', async (req, res) => {
     console.log('Request to create(signup) user with following payload: ')
     console.log(req.body)
 
-    // [Error handling] check empty fields (should/could be done at frontend)
+    // [Error handling] check empty fields
     if (!username || !password) {
       message.message = 'Error: Some required fields are missing!'
       return res.status(400).json(message)
