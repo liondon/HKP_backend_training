@@ -48,4 +48,11 @@ router.post('/', async (req, res) => {
   }
 })
 
+router.delete('/:id', async (req, res) => {
+  const _id = req.params.id
+  const item = await Item.findOne({ _id })
+  await item.remove()
+  return res.status(204).end()
+})
+
 module.exports = router
