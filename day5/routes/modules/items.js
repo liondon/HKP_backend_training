@@ -18,6 +18,7 @@ router.post('/', async (req, res) => {
     }
 
     // verify and decode the token
+    // TODO: do the verification as middleware, so that protected routes is clear
     req.decoded = jwt.verify(token, secret)
 
     // create a new item
@@ -44,15 +45,42 @@ router.post('/', async (req, res) => {
       return res.status(401).json(message)
     } else {
       // TODO: what should be returned? 500?
+      res.end()
     }
   }
 })
 
 router.delete('/:id', async (req, res) => {
-  const _id = req.params.id
-  const item = await Item.findOne({ _id })
-  await item.remove()
-  return res.status(204).end()
+  const message = {}
+  try {
+    const _id = req.params.id
+    const token = req.headers.authorization.split(' ')[1] // 'Bearer $TOKEN'
+
+    // verify and decode the token
+    // TODO: do the verification as middleware, so that protected routes is clear
+    req.decoded = jwt.verify(token, secret)
+
+    // find and delete the item
+    const item = await Item.findOne({
+      _id,
+      username: req.decoded.username
+    })
+    if (item) {
+      await item.remove()
+    }
+
+    return res.status(204).end()
+  } catch (err) {
+    console.log(err)
+    // [Error handling] JWT varification failed
+    if (err.name === 'JsonWebTokenError') {
+      message.message = 'Error: JWT verification failed.'
+      return res.status(401).json(message)
+    } else {
+      // TODO: what should be returned? 500?
+      res.end()
+    }
+  }
 })
 
 module.exports = router
