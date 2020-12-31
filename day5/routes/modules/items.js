@@ -28,7 +28,7 @@ router.get('/', async (req, res) => {
       return res.status(401).json(message)
     } else {
       // TODO: what should be returned? 500?
-      res.end()
+      res.status(500).end()
     }
   }
 })
@@ -64,6 +64,7 @@ router.post('/', async (req, res) => {
       quantity: item.quantity,
       username: item.username
     }
+
     return res.status(201).json({ item: result })
   } catch (err) {
     console.log(err)
@@ -73,7 +74,7 @@ router.post('/', async (req, res) => {
       return res.status(401).json(message)
     } else {
       // TODO: what should be returned? 500?
-      res.end()
+      res.status(500).end()
     }
   }
 })
@@ -106,7 +107,7 @@ router.delete('/:id', async (req, res) => {
       return res.status(401).json(message)
     } else {
       // TODO: what should be returned? 500?
-      res.end()
+      res.status(500).end()
     }
   }
 })

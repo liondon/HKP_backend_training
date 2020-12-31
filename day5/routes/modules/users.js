@@ -40,7 +40,7 @@ router.post('/login', async (req, res) => {
   } catch (err) {
     console.log(err)
     // TODO: what should be returned? 500?
-    res.end()
+    res.status(500).end()
   }
 })
 
@@ -83,7 +83,7 @@ router.post('/create', async (req, res) => {
   } catch (err) {
     console.log(err)
     // TODO: what should be returned? 500?
-    res.end()
+    res.status(500).end()
   }
 })
 
