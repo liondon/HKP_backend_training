@@ -70,7 +70,7 @@ router.post('/create', async (req, res) => {
     }
 
     // create new user
-    const hash = await bcrypt.hashSync(password, await bcrypt.genSaltSync(10))
+    const hash = bcrypt.hashSync(password, bcrypt.genSaltSync(10))
     const user = await User.create({
       username,
       password: hash
