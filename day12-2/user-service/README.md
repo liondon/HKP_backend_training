@@ -1,14 +1,5 @@
-# Purpose
+# Day12-2
 
-This project serves as a basic template for helping get a new Serverless service
-up and running. Just clone the repo, `rm -rf .git` then `npm install` and start 
-developing.
-
-Because of the inclusion of the `serverless-mocha-plugin`, a new function and
-related test file can be created with the following example command:
-
-`sls create function -f functionName --handler src/functions/fileName.handlerName --path src/test/functions --stage local`
-
-Also, the aws-sdk-mock npm module is included to allow for complete mocking of 
-AWS services allowing tests to be run at any time and debugging to occur very 
-simply.
+## Getting Started
+POST https://09gnyaio0i.execute-api.us-east-1.amazonaws.com/dev/v1/users with JSON data containing `username` and `password`, and check the returned status code `201`.  
+(use `$ curl -X POST --url https://09gnyaio0i.execute-api.us-east-1.amazonaws.com/dev/v1/users --data '{"username":"liondon","password":"password"}' -H 'Content-type: application/json' -i`)
