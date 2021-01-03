@@ -1,0 +1,81 @@
+service: user-service
+# app and org for use with dashboard.serverless.com
+app: hkp-bkntraining-day12
+org: liondon
+
+# You can pin your service to only deploy with a specific Serverless version
+# Check out our docs for more details
+frameworkVersion: "2"
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
+  # you can overwrite defaults here
+  stage: dev
+  region: us-east-1
+  # you can add statements to the Lambda function's IAM Role here
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - "dynamodb:Query"
+        - "dynamodb:PutItem"
+      Resource:
+        - arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.dynamodb.userTable}
+        - arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.dynamodb.userTable}/index/pk
+# you can define service wide environment variables here
+#  environment:
+#    variable1: value1
+
+# you can add packaging information here
+#package:
+#  include:
+#    - include-me.js
+#    - include-me-dir/**
+#  exclude:
+#    - exclude-me.js
+#    - exclude-me-dir/**
+
+functions:
+  createUser:
+    handler: src/functions/createUser.createUser
+    events:
+      - http:
+          method: post
+          cors: true
+          path: /v1/users
+          request:
+            schema:
+              application/json: ${file(src/schema/create_user_request.json)}
+    # Define function environment variables here
+    environment:
+      DYNAMODB_USER_TABLE: ${self:custom.dynamodb.userTable}
+
+plugins:
+  - serverless-tag-api-gateway
+  - serverless-iam-roles-per-function
+  - serverless-pseudo-parameters
+  - serverless-mocha-plugin
+
+custom:
+  dynamodb:
+    userTable: ${self:service}-user-${self:provider.stage}
+  serverless-mocha-plugin:
+    testTemplate: templates/testTemplate.ejs
+    functionTemplate: templates/functionTemplate.ejs
+
+# you can add CloudFormation resource templates here
+resources:
+  Resources:
+    userTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Retain
+      Properties:
+        TableName: ${self:custom.dynamodb.userTable}
+        AttributeDefinitions:
+          - AttributeName: pk
+            AttributeType: S
+        KeySchema:
+          - AttributeName: pk
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
