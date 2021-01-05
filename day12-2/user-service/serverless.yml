@@ -37,6 +37,8 @@ provider:
 #    - exclude-me-dir/**
 
 functions:
+  validate:
+    handler: src/functions/validate.validate
   loginUser:
     handler: src/functions/login.login
     events:
@@ -57,6 +59,14 @@ functions:
           request:
             schema:
               application/json: ${file(src/schema/create_user_request.json)}
+  testValidate:
+    handler: src/functions/testValidate.testValidate
+    events:
+      - http:
+          method: get
+          cors: true
+          path: /v1/testValidate
+          authorizer: validate
     # Define function environment variables here
     # environment:
     #   DYNAMODB_USER_TABLE: ${self:custom.dynamodb.userTable}
