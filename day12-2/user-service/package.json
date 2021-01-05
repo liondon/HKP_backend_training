@@ -21,6 +21,8 @@
   "dependencies": {
     "aws-sdk": "^2.462.0",
     "bcryptjs": "^2.4.3",
+    "dotenv": "^8.2.0",
+    "jsonwebtoken": "^8.5.1",
     "mocha": "^8.2.1",
     "serverless": "^2.17.0",
     "serverless-mocha-plugin": "^1.12.0"
