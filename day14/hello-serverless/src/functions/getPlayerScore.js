@@ -1,4 +1,6 @@
 const Responses = require('../functions/utils/API_Responses.js')
+const DynamoDB = require('../functions/utils/DynamoDB')
+const tableName = process.env.tableName
 
 exports.handler = async event => {
   console.log('event', event)
@@ -8,17 +10,14 @@ exports.handler = async event => {
   }
 
   const ID = event.pathParameters.ID
-  if (data[ID]) {
-    // return the data
-    return Responses._200(data[ID])
+
+  try {
+    const user = await DynamoDB.get(ID, tableName)
+    return Responses._200(user)
+  } catch (err) {
+    console.log('Error in DynamoDB get', err)
+    return Responses._400({
+      message: `Failed to get user by ID=${ID}`
+    })
   }
-
-  // failed as ID not found in the data
-  return Responses._400({ message: 'ID not found in data' })
-}
-
-const data = {
-  123: { name: 'Ann', age: 12, job: 'student' },
-  456: { name: 'Chris', age: 23, job: 'teacher' },
-  789: { name: 'Tom', age: 65, job: 'journalist' }
 }
