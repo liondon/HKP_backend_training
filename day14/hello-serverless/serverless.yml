@@ -65,6 +65,7 @@ package:
 #    - exclude-me-dir/**
 
 custom:
+  tableName: player-points
   s3Sync:
     - bucketName: news3bucket4slsdemo-liondon
       localDir: uploadData
@@ -125,6 +126,17 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: news3bucket4slsdemo-liondon
+    DemoDynamoDbTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.tableName}
+        AttributeDefinitions:
+          - AttributeName: ID
+            AttributeType: S
+        KeySchema:
+          - AttributeName: ID
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
 #  Outputs:
 #     NewOutput:
 #       Description: "Description for the output"
