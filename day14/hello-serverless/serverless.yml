@@ -103,12 +103,12 @@ functions:
 #      variable2: value2
 
 # you can add CloudFormation resource templates here
-#resources:
-#  Resources:
-#    NewResource:
-#      Type: AWS::S3::Bucket
-#      Properties:
-#        BucketName: my-new-bucket
+resources:
+  Resources:
+    DemoResource:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: news3bucket4slsdemo-liondon
 #  Outputs:
 #     NewOutput:
 #       Description: "Description for the output"
