@@ -50,17 +50,19 @@ provider:
 #  environment:
 #    variable1: value1
 
+plugins:
+  - serverless-s3-sync
+  - serverless-webpack
+
 # you can add packaging information here
-#package:
+package:
+  individually: true
 #  include:
 #    - include-me.js
 #    - include-me-dir/**
 #  exclude:
 #    - exclude-me.js
 #    - exclude-me-dir/**
-
-plugins:
-  - serverless-s3-sync
 
 custom:
   s3Sync:
