@@ -59,6 +59,14 @@ provider:
 #    - exclude-me.js
 #    - exclude-me-dir/**
 
+plugins:
+  - serverless-s3-sync
+
+custom:
+  s3Sync:
+    - bucketName: news3bucket4slsdemo-liondon
+      localDir: uploadData
+
 functions:
   hello:
     handler: handler.hello
