@@ -18,6 +18,22 @@ const DynamoDB = {
 
     console.log(data)
     return data.Item
+  },
+
+  async create(data, TableName) {
+    if (!data.ID) {
+      throw Error('field: ID is required')
+    }
+    const params = {
+      TableName,
+      Item: data
+    }
+    const res = await documentClient.put(params).promise()
+
+    if (!res) {
+      throw Error(`There was an error inserting ID of ${data.ID} in table ${TableName}`)
+    }
+    return data
   }
 }
 

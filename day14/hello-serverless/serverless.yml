@@ -31,21 +31,40 @@ provider:
   # you can define service wide environment variables here
   environment:
     tableName: ${self:custom.tableName}
+    bucketName: ${self:custom.bucketName}
   # you can add statements to the Lambda function's IAM Role here
   iamRoleStatements:
     - Effect: "Allow"
       Action:
         - dynamodb:*
+        - s3:*
       Resource: "*"
-#    - Effect: "Allow"
-#      Action:
-#        - "s3:PutObject"
-#      Resource:
-#        Fn::Join:
-#          - ""
-#          - - "arn:aws:s3:::"
-#            - "Ref" : "ServerlessDeploymentBucket"
-#            - "/*"
+  #    - Effect: "Allow"
+  #      Action:
+  #        - "s3:PutObject"
+  #      Resource:
+  #        Fn::Join:
+  #          - ""
+  #          - - "arn:aws:s3:::"
+  #            - "Ref" : "ServerlessDeploymentBucket"
+  #            - "/*"
+  apiKeys:
+    - free:
+        - MyFreeApiKey
+    - paid:
+        - myPaidApiKEy
+  usagePlan:
+    - free:
+        quota:
+          limit: 1000
+          period: MONTH
+        throttle:
+          rateLimit: 5
+          burstLimit: 20
+    - paid:
+        throttle:
+          rateLimit: 50
+          burstLimit: 200
 
 plugins:
   - serverless-s3-sync
@@ -63,8 +82,9 @@ package:
 
 custom:
   tableName: player-points
+  bucketName: news3bucket4slsdemo-liondon
   s3Sync:
-    - bucketName: news3bucket4slsdemo-liondon
+    - bucketName: ${self:custom.bucketName}
       localDir: uploadData
 
 functions:
@@ -82,7 +102,21 @@ functions:
           path: users/{ID}/score
           method: get
           cors: true
-
+  createPlayerScore:
+    handler: src/functions/createPlayerScore.handler
+    events:
+      - http:
+          path: users/{ID}/score
+          method: post
+          cors: true
+          private: true
+  createFile:
+    handler: src/functions/createFile.handler
+    events:
+      - http:
+          path: files/{fileName}
+          method: post
+          cors: true
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
@@ -129,7 +163,7 @@ resources:
     DemoResource:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: news3bucket4slsdemo-liondon
+        BucketName: ${self:custom.bucketName}
     DemoDynamoDbTable:
       Type: AWS::DynamoDB::Table
       Properties:
