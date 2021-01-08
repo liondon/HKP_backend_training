@@ -39,15 +39,32 @@ provider:
         - dynamodb:*
         - s3:*
       Resource: "*"
-#    - Effect: "Allow"
-#      Action:
-#        - "s3:PutObject"
-#      Resource:
-#        Fn::Join:
-#          - ""
-#          - - "arn:aws:s3:::"
-#            - "Ref" : "ServerlessDeploymentBucket"
-#            - "/*"
+  #    - Effect: "Allow"
+  #      Action:
+  #        - "s3:PutObject"
+  #      Resource:
+  #        Fn::Join:
+  #          - ""
+  #          - - "arn:aws:s3:::"
+  #            - "Ref" : "ServerlessDeploymentBucket"
+  #            - "/*"
+  apiKeys:
+    - free:
+        - MyFreeApiKey
+    - paid:
+        - myPaidApiKEy
+  usagePlan:
+    - free:
+        quota:
+          limit: 1000
+          period: MONTH
+        throttle:
+          rateLimit: 5
+          burstLimit: 20
+    - paid:
+        throttle:
+          rateLimit: 50
+          burstLimit: 200
 
 plugins:
   - serverless-s3-sync
@@ -92,6 +109,7 @@ functions:
           path: users/{ID}/score
           method: post
           cors: true
+          private: true
   createFile:
     handler: src/functions/createFile.handler
     events:
