@@ -40,6 +40,11 @@ functions:
     events:
       - websocket:
           route: $connect
+  websocket-disconnect:
+    handler: src/functions/disconnect.handler
+    events:
+      - websocket:
+          route: $disconnect
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
