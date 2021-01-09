@@ -1,6 +1,6 @@
 const Response = require('../utils/API_Responses')
 const DynamoDB = require('../utils/DynamoDB')
-
+const WebSocket = require('../utils/WebSocket')
 const tableName = process.env.tableName
 
 exports.handler = async event => {
@@ -12,7 +12,7 @@ exports.handler = async event => {
 
   try {
     const record = await DynamoDB.get(connectionID, tableName)
-    const messages = record.messages
+    const { messages, domainName, stage } = record
 
     messages.push(body.message)
 
@@ -22,6 +22,10 @@ exports.handler = async event => {
     }
 
     await DynamoDB.write(data, tableName)
+
+    await WebSocket.send({ domainName, stage, connectionID, message: 'This is the reply.' })
+    console.log('websocket sent message back.')
+
     return Response._200({ message: 'got a message' })
   } catch (err) {
     console.log('Error when receiving message', err)

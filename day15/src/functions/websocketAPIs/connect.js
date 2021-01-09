@@ -6,12 +6,14 @@ const tableName = process.env.tableName
 exports.handler = async event => {
   console.log('event', event)
 
-  const { connectionId: connectionID } = event.requestContext
+  const { connectionId: connectionID, domainName, stage } = event.requestContext
 
   const data = {
     ID: connectionID,
     date: Date.now(),
-    messages: []
+    messages: [],
+    domainName,
+    stage
   }
 
   try {
