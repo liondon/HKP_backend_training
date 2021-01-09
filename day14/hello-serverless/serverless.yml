@@ -38,6 +38,7 @@ provider:
       Action:
         - dynamodb:*
         - s3:*
+        - ses:*
       Resource: "*"
   #    - Effect: "Allow"
   #      Action:
@@ -129,6 +130,13 @@ functions:
             parameters:
               paths:
                 proxy: true
+  sendEmail:
+    handler: src/functions/sendEmail.handler
+    events:
+      - http:
+          path: sendEmail
+          method: post
+          cors: true
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
