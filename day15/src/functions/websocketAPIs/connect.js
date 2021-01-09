@@ -1,5 +1,5 @@
 const Response = require('../utils/API_Responses')
-const DynamoDB = require('../../../../day14/src/functions/utils/DynamoDB')
+const DynamoDB = require('../utils/DynamoDB')
 
 const tableName = process.env.tableName
 
@@ -14,7 +14,12 @@ exports.handler = async event => {
     messages: []
   }
 
-  await DynamoDB.write(data, tableName)
+  try {
+    await DynamoDB.write(data, tableName)
+  } catch (err) {
+    console.log('Error in writing to Dynamo with websocket connectionID', err)
+    return Response._500({ message: 'Error writing MyWebsocketUserTable' })
+  }
 
   return Response._200({ message: 'connected' })
 }

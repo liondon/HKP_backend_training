@@ -1,5 +1,5 @@
 const Response = require('../utils/API_Responses')
-const DynamoDB = require('../../../../day14/src/functions/utils/DynamoDB')
+const DynamoDB = require('../utils/DynamoDB')
 
 const tableName = process.env.tableName
 

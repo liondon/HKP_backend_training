@@ -1,4 +1,4 @@
-service: hello-serverless
+service: webSocketAPI
 
 frameworkVersion: "2"
 
@@ -19,10 +19,10 @@ provider:
     - Effect: "Allow"
       Action:
         - dynamodb:*
-          Resource:'*'
+      Resource: "*"
 
 custom:
-  tableName: WebsocketUsers
+  tableName: MyWebsocketUsers
 
 # you can add packaging information here
 # package:
@@ -36,22 +36,22 @@ custom:
 
 functions:
   websocket-connect:
-    handler: src/functions/connect.handler
+    handler: src/functions/websocketAPIs/connect.handler
     events:
       - websocket:
           route: $connect
   websocket-disconnect:
-    handler: src/functions/disconnect.handler
+    handler: src/functions/websocketAPIs/disconnect.handler
     events:
       - websocket:
           route: $disconnect
   websocket-message:
-    handler: src/functions/message.handler
+    handler: src/functions/websocketAPIs/message.handler
     events:
       - websocket:
-          route: $message
+          route: message
   websocket-default:
-    handler: src/functions/default.handler
+    handler: src/functions/websocketAPIs/default.handler
     events:
       - websocket:
           route: $default
@@ -96,12 +96,19 @@ functions:
 #      variable2: value2
 
 # you can add CloudFormation resource templates here
-# resources:
-#   Resources:
-#     DemoResource:
-#       Type: AWS::S3::Bucket
-#       Properties:
-#         BucketName: ${self:custom.bucketName}
+resources:
+  Resources:
+    WebsocketUserTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.tableName}
+        AttributeDefinitions:
+          - AttributeName: ID
+            AttributeType: S
+        KeySchema:
+          - AttributeName: ID
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
 #  Outputs:
 #     NewOutput:
 #       Description: "Description for the output"
