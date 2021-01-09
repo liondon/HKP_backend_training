@@ -12,19 +12,17 @@ provider:
   profile: Admin
 
   # you can define service wide environment variables here
-  # environment:
-  #   tableName: ${self:custom.tableName}
+  environment:
+    tableName: ${self:custom.tableName}
   # you can add statements to the Lambda function's IAM Role here
-  # iamRoleStatements:
-  #    - Effect: "Allow"
-  #      Action:
-  #        - "s3:PutObject"
-  #      Resource:
-  #        Fn::Join:
-  #          - ""
-  #          - - "arn:aws:s3:::"
-  #            - "Ref" : "ServerlessDeploymentBucket"
-  #            - "/*"
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - dynamodb:*
+          Resource:'*'
+
+custom:
+  tableName: WebsocketUsers
 
 # you can add packaging information here
 # package:
@@ -37,6 +35,11 @@ provider:
 #    - exclude-me-dir/**
 
 functions:
+  websocket-connect:
+    handler: src/functions/connect.handler
+    events:
+      - websocket:
+          route: $connect
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details

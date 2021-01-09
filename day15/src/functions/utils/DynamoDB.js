@@ -20,7 +20,7 @@ const DynamoDB = {
     return data.Item
   },
 
-  async create(data, TableName) {
+  async write(data, TableName) {
     if (!data.ID) {
       throw Error('field: ID is required')
     }
@@ -34,6 +34,17 @@ const DynamoDB = {
       throw Error(`There was an error inserting ID of ${data.ID} in table ${TableName}`)
     }
     return data
+  },
+
+  async delete(ID, TableName) {
+    const params = {
+      TableName,
+      Key: {
+        ID
+      }
+    }
+
+    return await documentClient.delete(params).promise()
   }
 }
 
