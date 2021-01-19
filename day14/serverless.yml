@@ -40,6 +40,11 @@ provider:
         - s3:*
         - ses:*
       Resource: "*"
+    - Effect: Allow
+      Action:
+        - sns:setSMSAttributes
+        - sns:Publish
+      Resource: "*"
   #    - Effect: "Allow"
   #      Action:
   #        - "s3:PutObject"
@@ -83,7 +88,7 @@ package:
 
 custom:
   tableName: player-points
-  bucketName: news3bucket4slsdemo-liondon
+  bucketName: 3bucket4slsdemo-liondon
   s3Sync:
     - bucketName: ${self:custom.bucketName}
       localDir: uploadData
@@ -136,6 +141,13 @@ functions:
       - http:
           path: sendEmail
           method: post
+          cors: true
+  sendSMS:
+    handler: src/functions/sendSMS.handler
+    events:
+      - http:
+          path: send-sms
+          method: POST
           cors: true
 
 #    The following are a few example events you can configure
