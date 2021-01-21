@@ -34,26 +34,14 @@ provider:
     bucketName: ${self:custom.bucketName}
   # you can add statements to the Lambda function's IAM Role here
   iamRoleStatements:
-    - Effect: "Allow"
+    - Effect: Allow
       Action:
         - dynamodb:*
         - s3:*
         - ses:*
-      Resource: "*"
-    - Effect: Allow
-      Action:
         - sns:setSMSAttributes
         - sns:Publish
       Resource: "*"
-  #    - Effect: "Allow"
-  #      Action:
-  #        - "s3:PutObject"
-  #      Resource:
-  #        Fn::Join:
-  #          - ""
-  #          - - "arn:aws:s3:::"
-  #            - "Ref" : "ServerlessDeploymentBucket"
-  #            - "/*"
   apiKeys:
     - free:
         - MyFreeApiKey
@@ -149,6 +137,11 @@ functions:
           path: send-sms
           method: POST
           cors: true
+  sendNews:
+    handler: src/scheduleTasks/sendNews.handler
+    events:
+      - schedule: cron(0 9 ? * 7 *)
+      # cron(m h date ?? day year)
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
