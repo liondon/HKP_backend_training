@@ -87,7 +87,7 @@ functions:
     events:
       - http:
           path: users/{ID}
-          method: get
+          method: GET
           cors: true
           private: true
   getPlayerScore:
@@ -95,14 +95,21 @@ functions:
     events:
       - http:
           path: users/{ID}/score
-          method: get
+          method: GET
           cors: true
   createPlayerScore:
     handler: src/functions/createPlayerScore.handler
     events:
       - http:
           path: users/{ID}/score
-          method: post
+          method: POST
+          cors: true
+  updatePlayerScore:
+    handler: src/functions/updatePlayerScore.handler
+    events:
+      - http:
+          path: users/{ID}/score
+          method: PUT
           cors: true
   createFile:
     handler: src/functions/createFile.handler
