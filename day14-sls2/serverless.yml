@@ -89,6 +89,7 @@ functions:
           path: users/{ID}
           method: get
           cors: true
+          private: true
   getPlayerScore:
     handler: src/functions/getPlayerScore.handler
     events:
@@ -103,7 +104,6 @@ functions:
           path: users/{ID}/score
           method: post
           cors: true
-          private: true
   createFile:
     handler: src/functions/createFile.handler
     events:
