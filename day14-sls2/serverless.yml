@@ -22,8 +22,8 @@ frameworkVersion: "2"
 
 provider:
   # you can overwrite defaults here
-  #  stage: dev
-  #  region: us-east-1
+  stage: dev
+  region: us-east-1
   name: aws
   runtime: nodejs12.x
   lambdaHashingVersion: 20201221
@@ -32,6 +32,8 @@ provider:
   environment:
     tableName: ${self:custom.tableName}
     bucketName: ${self:custom.bucketName}
+    binaryImgBucket: ${self:custom.binaryImgBucket}
+    region: ${self:provider.region}
   # you can add statements to the Lambda function's IAM Role here
   iamRoleStatements:
     - Effect: Allow
@@ -76,7 +78,8 @@ package:
 
 custom:
   tableName: player-points
-  bucketName: 3bucket4slsdemo-liondon
+  bucketName: s3bucket4slsdemo-liondon
+  binaryImgBucket: s3bucket-4-binary-img-upload-liondon
   s3Sync:
     - bucketName: ${self:custom.bucketName}
       localDir: uploadData
@@ -159,6 +162,13 @@ functions:
     events:
       - schedule: cron(0 9 ? * 7 *)
       # cron(m h date ?? day year)
+  binaryImgUpload:
+    handler: src/functions/binaryImgUpload.handler
+    events:
+      - http:
+          path: binaryImgUpload
+          method: POST
+          cors: true
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
@@ -207,6 +217,11 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:custom.bucketName}
+    binaryImgBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.binaryImgBucket}
+        AccessControl: PublicRead
     DemoDynamoDbTable:
       Type: AWS::DynamoDB::Table
       Properties:
