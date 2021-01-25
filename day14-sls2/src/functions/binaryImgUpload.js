@@ -16,11 +16,11 @@ exports.handler = async event => {
       return Responses._400({ message: 'incorrect body on request' })
     }
 
-    if (!allowedMimes.includes(body.mimes)) {
+    if (!allowedMimes.includes(body.mime)) {
       return Responses._400({ message: 'mime not allowed' })
     }
     let imageData = body.image
-    if (body.image.substr(0, 7) === 'base64') {
+    if (body.image.substr(0, 7) === 'base64,') {
       imageData = body.image.substr(7, body.image.length)
     }
 
