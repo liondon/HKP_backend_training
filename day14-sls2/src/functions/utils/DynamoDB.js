@@ -34,6 +34,34 @@ const DynamoDB = {
       throw Error(`There was an error inserting ID of ${data.ID} in table ${TableName}`)
     }
     return data
+  },
+
+  update: async ({ tableName, primaryKey, primaryKeyVal, updateKey, updateVal }) => {
+    // TODO: Q-why do we need the :updateVal placeholder?
+    const params = {
+      TableName: tableName,
+      Key: { [primaryKey]: primaryKeyVal },
+      UpdateExpression: `set ${updateKey} = :updateVal`,
+      ExpressionAttributeValues: {
+        ':updateVal': updateVal
+      }
+    }
+    return await documentClient.update(params).promise()
+  },
+
+  query: async ({ tableName, index, queryKey, queryVal }) => {
+    // TODO: Q-why do we need the :hkey placeholder?
+    const params = {
+      TableName: tableName,
+      IndexName: index,
+      KeyConditionExpression: `${queryKey} = :hkey`,
+      ExpressionAttributeValues: {
+        ':hkey': queryVal
+      }
+    }
+    const res = await documentClient.query(params).promise()
+
+    return res.Items || []
   }
 }
 
